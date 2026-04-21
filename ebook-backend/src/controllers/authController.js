@@ -25,8 +25,8 @@ export async function verifyCode(req, res) {
       const { token } = await authService.replaceSession(user.id);
       res.cookie('session', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: true,
+        sameSite: 'none',
         maxAge: 1000 * 60 * 60 * 24 * 7,
       });
       await otpService.createOTP(user.id, user.email);
@@ -37,8 +37,8 @@ export async function verifyCode(req, res) {
     const { token, tokenHash } = await authService.createSession(user.id);
     res.cookie('session', token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      secure: true,
+      sameSite: 'none',
       maxAge: 1000 * 60 * 60 * 24 * 7,
     });
     await authService.activateSession(tokenHash);
