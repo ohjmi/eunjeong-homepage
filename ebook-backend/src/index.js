@@ -13,8 +13,8 @@ import cookieParser from 'cookie-parser';
 const app = express();
 //app.use(cors());
 app.use(cors({
-  origin: 'http://localhost:5173', // 프론트 주소
-  credentials: true,               // 쿠키 허용
+  origin: 'https://eeeunjeong.netlify.app',
+  credentials: true,
 }));
 app.use(express.json());
 app.use(cookieParser());
