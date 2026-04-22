@@ -18,7 +18,7 @@ export const r2 = new S3Client({
 //   }));
 // }
 
-export async function uploadToR2(key, buffer, contentType = 'image/jpeg') {
+export async function uploadToR2(key, buffer, contentType = 'image/webp') {
   await r2.send(new PutObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME,
     Key: key,

@@ -1,21 +1,42 @@
-// import { pdf } from 'pdf-to-img';
-// import sharp from 'sharp';
+import { createCanvas } from 'canvas';
+import sharp from 'sharp';
 
-// export async function convertPdfToWebP(pdfBuffer) {
-//   const pages = [];
-//   const doc = await pdf(pdfBuffer, { scale: 2 });
+let pdfjsLib = null;
 
-//   let pageNum = 1;
-//   for await (const page of doc) {
-//     const webp = await sharp(page).webp({ quality: 85 }).toBuffer();
-//     pages.push({ pageNum, buffer: webp });
-//     pageNum++;
-//   }
+async function getPdfjs() {
+  if (!pdfjsLib) {
+    pdfjsLib = await import('pdfjs-dist/build/pdf.mjs');
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+  }
+  return pdfjsLib;
+}
 
-//   return pages;
-// }
-
-// PDF 변환은 Railway 배포 후 진행
 export async function convertPdfToWebP(pdfBuffer) {
-  throw new Error('PDF 변환은 Railway 배포 후 사용 가능합니다.');
+  const { getDocument } = await getPdfjs();
+
+  const loadingTask = getDocument({ data: new Uint8Array(pdfBuffer) });
+  const doc = await loadingTask.promise;
+
+  const pages = [];
+
+  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
+    const page = await doc.getPage(pageNum);
+    const viewport = page.getViewport({ scale: 2 });
+
+    const canvas = createCanvas(viewport.width, viewport.height);
+    const context = canvas.getContext('2d');
+
+    await page.render({ canvasContext: context, viewport }).promise;
+
+    const pngBuffer = canvas.toBuffer('image/png');
+    const webp = await sharp(pngBuffer).webp({ quality: 85 }).toBuffer();
+
+    pages.push({ pageNum, buffer: webp });
+
+    page.cleanup();
+  }
+
+  await doc.destroy();
+
+  return pages;
 }

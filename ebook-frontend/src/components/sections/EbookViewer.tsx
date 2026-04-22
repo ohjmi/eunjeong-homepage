@@ -8,8 +8,8 @@ import CodeAuthModal from "../modals/CodeAuth";
 
 const MotionDiv = motion.div;
 
-const BATCH_SIZE = 50;
-const PREFETCH_THRESHOLD = 10;
+const BATCH_SIZE = 10;
+const PREFETCH_THRESHOLD = 5;
 
 interface Props {
   ebookId: number | undefined;
@@ -100,6 +100,13 @@ const EbookViewer = ({ ebookId, onClose }: Props) => {
           `/api/ebook/pages?start=${pageParam}&limit=${BATCH_SIZE}`,
           { credentials: "include" },
         );
+
+        if (res.status === 401) {
+          setIsVerified(false);
+          setShowAuthModal(true);
+          throw new Error("UNAUTHORIZED");
+        }
+
         return res.json();
       },
       initialPageParam: 1,

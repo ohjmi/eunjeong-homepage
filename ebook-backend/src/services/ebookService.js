@@ -142,11 +142,11 @@
 
 //     for (let i = startPage; i <= endPage; i++) {
 //       // const originalKey = `${user.ebooks.r2_prefix}/page-${i}.webp`;
-//       const originalKey = `${user.ebooks.r2_prefix}/page-${i}.jpg`;
+//       const originalKey = `${user.ebooks.r2_prefix}/page-${i}.webp`;
 //       console.log('originalKey:', originalKey);
 //       // 유저별 캐싱 키 (유저ID 폴더 하위에 저장)
 //       // const cacheKey = `watermarked/${user.id}/page-${i}.webp`;
-//       const cacheKey = `watermarked/${user.id}/page-${i}.jpg`;
+//       const cacheKey = `watermarked/${user.id}/page-${i}.webp`;
 
 //       urlPromises.push(
 //         (async () => {
@@ -181,7 +181,7 @@
 
 //     for (let i = 1; i <= PREVIEW_LIMIT; i++) {
 //       // const key = `${ebook.r2_prefix}/page-${i}.webp`;
-//       const key = `${ebook.r2_prefix}/page-${i}.jpg`;
+//       const key = `${ebook.r2_prefix}/page-${i}.webp`;
 //       urlPromises.push(generateSignedUrl(key));
 //     }
 
@@ -304,18 +304,15 @@ async function applyAndCacheWatermark(originalKey, cacheKey, watermarkText) {
   //   .toBuffer();
 
   const watermarked = await image
-    .composite([
-      // { input: svgBuffer, top: 0, left: 0 },
-      { input: bannerBuffer, top: 0, left: 0 },
-    ])
-    .jpeg({ quality: 85 })
+    .composite([{ input: bannerBuffer, top: 0, left: 0 }])
+    .webp({ quality: 85 })
     .toBuffer();
 
   await r2.send(new PutObjectCommand({
     Bucket: process.env.R2_BUCKET_NAME,
     Key: cacheKey,
     Body: watermarked,
-    ContentType: 'image/jpeg',
+    ContentType: 'image/webp',
   }));
 }
 
@@ -351,8 +348,8 @@ export const ebookService = {
     const urlPromises = [];
 
     for (let i = startPage; i <= endPage; i++) {
-      const originalKey = `${user.ebooks.r2_prefix}/page-${i}.jpg`;
-      const cacheKey = `watermarked/${user.id}/page-${i}.jpg`;
+      const originalKey = `${user.ebooks.r2_prefix}/page-${i}.webp`;
+      const cacheKey = `watermarked/${user.id}/page-${i}.webp`;
 
       urlPromises.push(
         (async () => {
@@ -382,7 +379,7 @@ export const ebookService = {
     const urlPromises = [];
 
     for (let i = 1; i <= PREVIEW_LIMIT; i++) {
-      const key = `${ebook.r2_prefix}/page-${i}.jpg`;
+      const key = `${ebook.r2_prefix}/page-${i}.webp`;
       urlPromises.push(generateSignedUrl(key));
     }
 
