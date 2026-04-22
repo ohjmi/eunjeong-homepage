@@ -1,42 +1,24 @@
-import { createCanvas } from 'canvas';
+import { pdf } from 'pdf-to-img';
 import sharp from 'sharp';
 
-let pdfjsLib = null;
-
-async function getPdfjs() {
-  if (!pdfjsLib) {
-    pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = await import.meta.resolve('pdfjs-dist/legacy/build/pdf.worker.mjs');
-  }
-  return pdfjsLib;
-}
-
 export async function convertPdfToWebP(pdfBuffer) {
-  const { getDocument } = await getPdfjs();
-
-  const loadingTask = getDocument({ data: new Uint8Array(pdfBuffer) });
-  const doc = await loadingTask.promise;
+  const document = await pdf(pdfBuffer, {
+    scale: 2  // 기존 코드와 동일한 스케일
+  });
 
   const pages = [];
+  let pageNum = 0;
 
-  for (let pageNum = 1; pageNum <= doc.numPages; pageNum++) {
-    const page = await doc.getPage(pageNum);
-    const viewport = page.getViewport({ scale: 2 });
+  // pdf-to-img는 async iterator를 반환합니다
+  for await (const pngBuffer of document) {
+    pageNum++;
 
-    const canvas = createCanvas(viewport.width, viewport.height);
-    const context = canvas.getContext('2d');
-
-    await page.render({ canvasContext: context, viewport }).promise;
-
-    const pngBuffer = canvas.toBuffer('image/png');
-    const webp = await sharp(pngBuffer).webp({ quality: 85 }).toBuffer();
+    const webp = await sharp(pngBuffer)
+      .webp({ quality: 85 })
+      .toBuffer();
 
     pages.push({ pageNum, buffer: webp });
-
-    page.cleanup();
   }
-
-  await doc.destroy();
 
   return pages;
 }
