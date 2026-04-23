@@ -27,7 +27,7 @@ const Products = () => {
       description: "This is a short description.",
       image: product1,
       hasViewer: true,
-      ebookId: 2, // ← DB ebooks.id 값
+      ebookId: 3, // ← DB ebooks.id 값
     },
     {
       id: 2,
