@@ -7,9 +7,14 @@ export async function verifyOtp(req, res) {
     const { otp } = req.body;
     const token = req.cookies.session;
 
+    console.log('[verifyOtp] cookies:', req.cookies);
+    console.log('[verifyOtp] token exists:', !!token, 'length:', token?.length);
+
     if (!token) return res.status(401).json({ error: 'NO_TOKEN' });
 
     const session = await authService.getSessionByToken(token);
+    console.log('[verifyOtp] session found:', !!session, session);
+
     if (!session) return res.status(401).json({ error: 'INVALID_SESSION' });
 
     const isValid = await otpService.verifyOTP(session.user_id, otp);

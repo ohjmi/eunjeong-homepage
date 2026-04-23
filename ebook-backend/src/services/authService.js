@@ -31,12 +31,14 @@ export const authService = {
 
     const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
 
-    await supabase.from('sessions').insert({
+    const { error } = await supabase.from('sessions').insert({
       user_id: userId,
       token_hash: tokenHash,
       is_verified: false,
       expires_at: expiresAt.toISOString(),
     });
+
+    if (error) throw new Error('세션 생성 실패: ' + error.message);
 
     return { token, tokenHash };
   },
