@@ -31,7 +31,7 @@ async function getUserWithEbook(userId) {
 //           y="${y}"
 //           fill="rgba(0,0,0,0.12)"
 //           font-size="14"
-//           font-family="Arial"
+//           font-family="Noto Sans CJK KR, sans-serif"
 //           font-weight="bold"
 //           transform="rotate(${angle}, ${x}, ${y})"
 //         >${text}</text>
@@ -58,7 +58,7 @@ function createBannerSvg(width, height, text, position) {
         y="${textY}"
         fill="black"
         font-size="14"
-        font-family="Arial"
+        font-family="Noto Sans CJK KR, sans-serif"
         font-weight="bold"
         text-anchor="middle"
         dominant-baseline="middle"
