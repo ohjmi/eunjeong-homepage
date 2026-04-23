@@ -53,18 +53,10 @@ function createBannerSvg(width, height, text, position) {
 
   return Buffer.from(`
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
-      <rect
-        x="0"
-        y="${bannerY}"
-        width="${width}"
-        height="${bannerHeight}"
-        fill="black"
-        fill-opacity="0.6"
-      />
       <text
         x="${width / 2}"
         y="${textY}"
-        fill="white"
+        fill="black"
         font-size="14"
         font-family="Arial"
         font-weight="bold"
