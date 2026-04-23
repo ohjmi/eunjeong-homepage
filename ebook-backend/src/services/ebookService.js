@@ -48,21 +48,23 @@ async function getUserWithEbook(userId) {
 
 function createBannerSvg(width, height, text, position) {
   const bannerHeight = 40;
-  // const y = position === 'top' ? bannerHeight : height - bannerHeight;
-  const y = position === 'top' ? bannerHeight - 20 : height - bannerHeight - 20;
+  const bannerY = position === 'top' ? 0 : height - bannerHeight;
+  const textY = bannerY + bannerHeight / 2;
 
   return Buffer.from(`
     <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       <rect
         x="0"
-        y="${position === 'top' ? 0 : height - bannerHeight}"
+        y="${bannerY}"
         width="${width}"
         height="${bannerHeight}"
+        fill="black"
+        fill-opacity="0.6"
       />
       <text
         x="${width / 2}"
-        y="${y}"
-        color="gray"
+        y="${textY}"
+        fill="white"
         font-size="14"
         font-family="Arial"
         font-weight="bold"

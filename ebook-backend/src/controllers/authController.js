@@ -20,9 +20,11 @@ export async function verifyCode(req, res) {
     const user = await authService.findUserByCode(code);
 
     // 3. DB에 다른 기기 세션 있으면 device_change
+    //    기존 세션은 건드리지 않고 현재 기기용 pending 세션만 새로 발급
+    //    실제 교체는 confirmDevice에서 일어남
     const hasSession = await authService.hasActiveSession(user.id);
     if (hasSession) {
-      const { token } = await authService.replaceSession(user.id);
+      const { token } = await authService.createSession(user.id);
       res.cookie('session', token, {
         httpOnly: true,
         secure: true,
@@ -79,8 +81,9 @@ export async function confirmDevice(req, res) {
 
     const tokenHash = hashToken(token);
 
-    // 현재 세션 활성화
+    // 현재 세션 활성화 + 다른 기기 세션 모두 제거 (여기서 기존 기기가 튕김)
     await authService.activateSession(tokenHash);
+    await authService.kickOtherSessions(session.user_id, tokenHash);
 
     return res.json({ success: true });
 

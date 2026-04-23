@@ -70,20 +70,11 @@ export const authService = {
       .eq('token_hash', tokenHash);
   },
 
-  replaceSession: async (userId) => {
-    const token = generateSessionToken();
-    const tokenHash = hashToken(token);
-    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
-
-    const { error } = await supabase
+  kickOtherSessions: async (userId, currentTokenHash) => {
+    await supabase
       .from('sessions')
-      .update({
-        token_hash: tokenHash,
-        is_verified: false,
-        expires_at: expiresAt.toISOString(),
-      })
-      .eq('user_id', userId);
-
-    return { token, tokenHash };
+      .delete()
+      .eq('user_id', userId)
+      .neq('token_hash', currentTokenHash);
   },
 };
