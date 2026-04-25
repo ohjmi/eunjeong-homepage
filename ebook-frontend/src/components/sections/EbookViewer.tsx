@@ -238,7 +238,7 @@ const EbookViewer = ({ ebookId, onClose }: Props) => {
       <IconButton
         aria-label="close"
         position="absolute"
-        top={{ base: "60px", xl: "24px" }}
+        top={{ base: "120px", xl: "24px" }}
         right={{ base: "24px", xl: "60px" }}
         onClick={onClose}
         bg="grey.100"
@@ -249,6 +249,7 @@ const EbookViewer = ({ ebookId, onClose }: Props) => {
       <IconButton
         aria-label="previous"
         position="absolute"
+        top={{ base: "30%", xl: "auto" }}
         left="24px"
         zIndex="10"
         onClick={prev}
@@ -278,7 +279,7 @@ const EbookViewer = ({ ebookId, onClose }: Props) => {
 
       <Text
         position="absolute"
-        bottom={{ base: "80px", xl: "40px" }}
+        bottom={{ base: "30px", xl: "40px" }}
         color="gray.300"
         fontSize="sm"
       >
@@ -289,6 +290,7 @@ const EbookViewer = ({ ebookId, onClose }: Props) => {
       <IconButton
         aria-label="next"
         position="absolute"
+        top={{ base: "30%", xl: "auto" }}
         right="24px"
         onClick={next}
         // bg="gray.100"
