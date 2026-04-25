@@ -238,8 +238,8 @@ const EbookViewer = ({ ebookId, onClose }: Props) => {
       <IconButton
         aria-label="close"
         position="absolute"
-        top="24px"
-        right="60px"
+        top={{ base: "60px", xl: "24px" }}
+        right={{ base: "24px", xl: "60px" }}
         onClick={onClose}
         bg="grey.100"
       >
@@ -276,7 +276,12 @@ const EbookViewer = ({ ebookId, onClose }: Props) => {
         )}
       </Flex>
 
-      <Text position="absolute" bottom="40px" color="gray.300" fontSize="sm">
+      <Text
+        position="absolute"
+        bottom={{ base: "80px", xl: "40px" }}
+        color="gray.300"
+        fontSize="sm"
+      >
         {leftPage}
         {rightPage ? ` - ${rightPage}` : ""} / {totalPages}
       </Text>
